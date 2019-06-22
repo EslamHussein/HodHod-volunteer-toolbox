@@ -69,7 +69,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, ValueEventListener
 
         mClusterManager = ClusterManager(this@MainActivity, mMap)
 
-        googleMap.setOnCameraIdleListener(mClusterManager);
+        googleMap.setOnCameraIdleListener(mClusterManager)
 
 
         val renderer = CustomClusterRenderer(this, mMap, mClusterManager)
