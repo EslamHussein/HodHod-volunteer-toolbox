@@ -25,7 +25,7 @@ class ServiceProvidersAdapter(private val items: List<ServiceProviderItem> = emp
         val item = items[position]
         holder.serviceNameTextView.text = item.getProviderType()
         holder.serviceNumberTextView.text = item.getProviderNumber()
-        holder.serviceProviderImageView.setImageResource(item.getIcon())
+        holder.serviceProviderImageView.setImageResource(item.type.icon)
     }
 
     inner class ViewHolder(v: View) : RecyclerView.ViewHolder(v) {

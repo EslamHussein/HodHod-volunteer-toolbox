@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.revolutan.hodhodclint.R
 import com.revolutan.hodhodclint.dto.Issue
+import com.revolutan.hodhodclint.dto.Problems
 
 
 class IssuesAdapter(private val items: List<Issue> = emptyList(), val onItemClick: OnItemClick) : RecyclerView.Adapter<IssuesAdapter.ViewHolder>() {
@@ -26,7 +27,7 @@ class IssuesAdapter(private val items: List<Issue> = emptyList(), val onItemClic
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = items[position]
-        holder.issueImageView.setImageResource(item.icon)
+        holder.issueImageView.setImageResource(Problems.fromString(item.type).icon)
         holder.issueIdTextView.text = item.type
 
         holder.itemView.setOnClickListener {

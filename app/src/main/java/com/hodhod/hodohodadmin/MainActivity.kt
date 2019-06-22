@@ -1,5 +1,7 @@
 package com.hodhod.hodohodadmin
 
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -10,12 +12,8 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
-import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.*
 import com.google.firebase.database.*
-import com.google.maps.android.clustering.ClusterManager
 import com.hodhod.hodohodadmin.adapter.ProblemsAdapter
 import com.hodhod.hodohodadmin.adapter.ServiceProvidersAdapter
 import com.hodhod.hodohodadmin.dto.*
@@ -33,13 +31,14 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, ValueEventListener
     private lateinit var database: FirebaseDatabase
     private lateinit var reportersDB: DatabaseReference
     private lateinit var reportsDB: DatabaseReference
-    private var reporterList: List<SampleClusterItem> = emptyList()
+    private var reporterList: MutableList<Reporter> = mutableListOf()
 
     private var issuesMarker = mutableMapOf<String, Marker>()
 
-    private var issuesList = mutableListOf<Issue>()
+    private var reportersMarker = mutableMapOf<String, Marker>()
 
-    private lateinit var mClusterManager: ClusterManager<SampleClusterItem>
+
+    private var issuesList = mutableListOf<Issue>()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -74,18 +73,15 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, ValueEventListener
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
-        mClusterManager = ClusterManager(this@MainActivity, mMap)
 
-        googleMap.setOnCameraIdleListener(mClusterManager)
-        val renderer = CustomClusterRenderer(this, mMap, mClusterManager)
-        mClusterManager.renderer = renderer
 
         mMap.mapType = GoogleMap.MAP_TYPE_HYBRID
+        val location = LatLng(31.2213, 29.9379)
 
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(LatLng(21.3549, 39.9841)));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(location))
 
         val zoomLevel = 16.0f //This goes up to 21
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(21.3549, 39.9841), zoomLevel))
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, zoomLevel))
 
         reportersDB.addValueEventListener(this)
         reportsDB.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -101,7 +97,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, ValueEventListener
                     issuesList.add(issue!!)
                     val markerOptions = MarkerOptions()
                     markerOptions.position(LatLng(issue.lat, issue.lng))
-                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.group))
+//                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.group))
                     issuesMarker[it.key.toString()] = googleMap.addMarker(markerOptions)
                     updateAnalytics()
                 }
@@ -157,36 +153,44 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, ValueEventListener
     }
 
     override fun onDataChange(data: DataSnapshot) {
-        val list = mutableListOf<SampleClusterItem>()
 
         data.children.forEach {
 
-            val reporter = it.getValue(Reporter::class.java)
-            list.add(SampleClusterItem(reporter!!))
+            val reporter = it.getValue(Reporter::class.java)!!
+
+            val markerOptions = MarkerOptions()
+
+            markerOptions.position(LatLng(reporter.lat, reporter.lng))
+
+            markerOptions.icon(bitmapDescriptorFromVector(R.drawable.ic_health))
+            reportersMarker[reporter.name] = mMap.addMarker(markerOptions)
+            reporterList.add(reporter)
+
         }
 
-        reporterList = list
 
         updateReporters(reporterList)
     }
 
 
-    private fun updateReporters(reportersList: List<SampleClusterItem>) {
-        val serviceProviderItems = reportersList.groupBy { it.reporter.speciality }.entries.map {
+    private fun bitmapDescriptorFromVector(vectorResId: Int): BitmapDescriptor {
+        val vectorDrawable = ContextCompat.getDrawable(this, vectorResId)
+        vectorDrawable!!.setBounds(0, 0, vectorDrawable.intrinsicWidth, vectorDrawable.intrinsicHeight)
+        val bitmap = Bitmap.createBitmap(vectorDrawable.intrinsicWidth, vectorDrawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        vectorDrawable.draw(canvas)
+        return BitmapDescriptorFactory.fromBitmap(bitmap)
+    }
 
-            ServiceProviderItem(it.key, it.value.size)
-        }.filter {
-            it.type.isNotEmpty()
+
+    private fun updateReporters(reportersList: List<Reporter>) {
+        val serviceProviderItems = reportersList.groupBy { it.speciality }.entries.map {
+
+            ServiceProviderItem(Problems.fromString(it.key), it.value.size)
         }
 
 
         serviceProviderTotalNumberTextView.text = "Total number of volunteers ${reportersList.size} "
-
-
-        mClusterManager.clearItems()
-        mClusterManager.addItems(reportersList)
-
-        mClusterManager.cluster()
 
         val layout = LinearLayoutManager(this)
         serviceProviderRecyclerView.layoutManager = layout

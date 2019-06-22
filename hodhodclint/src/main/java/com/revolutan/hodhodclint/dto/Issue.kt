@@ -5,18 +5,43 @@ import com.revolutan.hodhodclint.R
 
 data class LatLng(val latitude: Double, val longitude: Double)
 
-data class Issue(val type: String, @DrawableRes val icon: Int, var reporterName: String? = null, var lat: Double? = null, var lng: Double? = null)
+data class Issue(val type: String, var reporterName: String? = null, var lat: Double? = null, var lng: Double? = null)
 data class Reporter(var name: String = "Reporter", var lat: Double = 0.0, var lng: Double = 0.0, val speciality: String = "")
+
+
+enum class Problems(val value: String, @DrawableRes val icon: Int) {
+    MedicalAssistance("Medical assistance", R.drawable.ic_health),
+    FoodDistributors("Food distributors", R.drawable.ic_food),
+    WaterIssues("Water Issues", R.drawable.ic_water),
+    SurvivorsHandling("Survivors handling", R.drawable.ic_people),
+    RoadAndBridgeFixes("Road and Bridge fixes", R.drawable.ic_road),
+    CleanupOperations("Cleanup operations", R.drawable.ic_recycle);
+
+    companion object {
+        fun fromString(str: String): Problems {
+            return when (str) {
+                "Medical assistance" -> MedicalAssistance
+                "Food distributors" -> FoodDistributors
+                "Water Issues" -> WaterIssues
+                "Survivors handling" -> SurvivorsHandling
+                "Road and Bridge fixes" -> RoadAndBridgeFixes
+                else -> CleanupOperations
+
+            }
+        }
+    }
+
+}
 
 
 fun getIssuesTypes(): List<Issue> {
     return listOf(
-            Issue("Report Missing", R.drawable.ic_launcher_foreground),
-            Issue("Call for Medical", R.drawable.ic_launcher_foreground),
-            Issue("Report water level", R.drawable.ic_launcher_foreground),
-            Issue("Report congestion", R.drawable.ic_launcher_foreground),
-            Issue("Go to higher ground", R.drawable.ic_launcher_foreground),
-            Issue("Call for food", R.drawable.ic_launcher_foreground)
+            Issue(type = Problems.MedicalAssistance.value),
+            Issue(type = Problems.FoodDistributors.value),
+            Issue(type = Problems.WaterIssues.value),
+            Issue(type = Problems.SurvivorsHandling.value),
+            Issue(type = Problems.RoadAndBridgeFixes.value),
+            Issue(type = Problems.CleanupOperations.value)
     )
 }
 
@@ -27,22 +52,21 @@ fun generateRandomReporter(): Reporter {
                     , LatLng(31.2555, 29.9832))
     val lat = randomLocation.latitude
     val lng = randomLocation.longitude
-
-    return listOf(Reporter("Eslam", lat, lng, "Report Missing"),
-            Reporter("Hussein", lat, lng, "Call for Medical"),
-            Reporter("Ahmed", lat, lng, "Report water level"),
-            Reporter("Mohamed", lat, lng, "Report congestion"),
-            Reporter("Abeer", lat, lng, "Go to higher ground"),
-            Reporter("Salah", lat, lng, "Call for food"),
-            Reporter("Mostafa", lat, lng, "Report water level"),
-            Reporter("Yahia", lat, lng, "Report congestion"),
-            Reporter("Magdy", lat, lng, "Call for food"),
-            Reporter("Ibrahiem", lat, lng, "Report Missing"),
-            Reporter("Hend", lat, lng, "Call for Medical"),
-            Reporter("Dina", lat, lng, "Report water level"),
-            Reporter("Eman", lat, lng, "Report congestion"),
-            Reporter("Moamn", lat, lng, "Go to higher ground"),
-            Reporter("Doaa", lat, lng, "Call for food")
+    return listOf(Reporter("Eslam", lat, lng, Problems.MedicalAssistance.value),
+            Reporter("Hussein", lat, lng, Problems.FoodDistributors.value),
+            Reporter("Ahmed", lat, lng, Problems.WaterIssues.value),
+            Reporter("Mohamed", lat, lng, Problems.SurvivorsHandling.value),
+            Reporter("Abeer", lat, lng, Problems.RoadAndBridgeFixes.value),
+            Reporter("Salah", lat, lng, Problems.CleanupOperations.value),
+            Reporter("Mostafa", lat, lng, Problems.MedicalAssistance.value),
+            Reporter("Yahia", lat, lng, Problems.FoodDistributors.value),
+            Reporter("Magdy", lat, lng, Problems.WaterIssues.value),
+            Reporter("Ibrahiem", lat, lng, Problems.SurvivorsHandling.value),
+            Reporter("Hend", lat, lng, Problems.RoadAndBridgeFixes.value),
+            Reporter("Dina", lat, lng, Problems.CleanupOperations.value),
+            Reporter("Eman", lat, lng, Problems.MedicalAssistance.value),
+            Reporter("Moamn", lat, lng, Problems.FoodDistributors.value),
+            Reporter("Doaa", lat, lng, Problems.WaterIssues.value)
     ).shuffled().first()
 }
 
