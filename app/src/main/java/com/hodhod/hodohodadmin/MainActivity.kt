@@ -190,13 +190,16 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, ValueEventListener
 
 
     fun updateAnalytics() {
+        val totalCount = issuesList.size
 
         val counter = issuesList.groupBy {
             it.type
         }.mapValues {
-            Problem(it.value.size, Problems.fromString(it.key))
+            Pair(it.value.size, it.key)
         }.toList().map {
-            it.second
+            val count = it.second.first
+            val parentage = (count.toFloat() / totalCount.toFloat()) * 100
+            Problem(it.second.first, Problems.fromString(it.second.second), parentage.toInt())
         }
 
 

@@ -25,15 +25,15 @@ enum class Problems(val value: String) {
 
 }
 
-data class Problem(val count: Int, val type: Problems)
+data class Problem(val count: Int = 0, val type: Problems, val parentage: Int = 0)
 
 fun getProblems(): List<Problem> {
     return listOf(
-            Problem(0, Problems.ReportMissing),
-            Problem(0, Problems.CallForMedical),
-            Problem(0, Problems.ReportWaterLevel),
-            Problem(0, Problems.ReportCongestion),
-            Problem(0, Problems.GoToHigherGround),
-            Problem(0, Problems.CallForFood)
+            Problem(type = Problems.ReportMissing),
+            Problem(type = Problems.CallForMedical),
+            Problem(type = Problems.ReportWaterLevel),
+            Problem(type = Problems.ReportCongestion),
+            Problem(type = Problems.GoToHigherGround),
+            Problem(type = Problems.CallForFood)
     )
 }

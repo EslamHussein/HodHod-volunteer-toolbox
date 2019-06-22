@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.hodhod.hodohodadmin.R
 import com.hodhod.hodohodadmin.dto.Problem
@@ -28,6 +29,21 @@ class ProblemsAdapter(private var items: List<Problem>) : RecyclerView.Adapter<P
         holder.problemNumberTextView.text = item.count.toString()
 
         holder.titleTextView.text = item.type.value
+
+        val color = when {
+            item.parentage == 0 -> {
+                R.color.white
+            }
+            item.parentage > 16 -> {// red
+                R.color.red
+            }
+            else -> {//Green
+                R.color.green
+            }
+        }
+
+        holder.parentageTextView.setTextColor(ContextCompat.getColor(context, color))
+        holder.parentageTextView.text = "${item.parentage} %"
     }
 
     fun updateValues(items: List<Problem>) {
@@ -40,5 +56,6 @@ class ProblemsAdapter(private var items: List<Problem>) : RecyclerView.Adapter<P
     inner class ViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         var problemNumberTextView: TextView = v.findViewById(R.id.problemNumberTextView)
         var titleTextView: TextView = v.findViewById(R.id.titleTextView)
+        var parentageTextView: TextView = v.findViewById(R.id.parentageTextView)
     }
 }
