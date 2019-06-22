@@ -2,6 +2,7 @@ package com.hodhod.hodohodadmin
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -44,6 +45,12 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, ValueEventListener
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
+        setSupportActionBar(my_toolbar)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+        supportActionBar?.setIcon(R.drawable.logo)
+        my_toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.colorAccent))
+
+
 
         problemsAdapter = ProblemsAdapter(getProblems())
 
@@ -201,8 +208,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, ValueEventListener
             val parentage = (count.toFloat() / totalCount.toFloat()) * 100
             Problem(it.second.first, Problems.fromString(it.second.second), parentage.toInt())
         }
-
-
         problemsAdapter.updateValues(counter)
 
     }

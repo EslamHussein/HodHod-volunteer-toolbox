@@ -39,7 +39,7 @@
 
         android:text="-4%"
         android:textColor="#ff4922"
-        android:textSize="14sp"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="@+id/problemNumberTextView"
         app:layout_constraintStart_toEndOf="@+id/problemNumberTextView" />
 
