@@ -28,7 +28,8 @@ class ReportScreenActivity : AppCompatActivity(), IssuesAdapter.OnItemClick {
         item.apply {
             reporterName = generateRandomNames()
             val randomLocation =
-                    generateRandomLocation(LatLng(0.205610, 32.583221), LatLng(0.188618, 32.595352))
+                    generateRandomLocation(LatLng(31.2213, 29.9379)
+                            , LatLng(31.2555, 29.9832))
             lat = randomLocation.latitude
             lng = randomLocation.longitude
 
@@ -40,7 +41,6 @@ class ReportScreenActivity : AppCompatActivity(), IssuesAdapter.OnItemClick {
         myRef.push().setValue(item).addOnFailureListener {
             builder.setMessage("Please try again.")
             builder.show()
-
         }.addOnSuccessListener {
             builder.setMessage("Issue has been submitted successfully ")
             builder.show()
