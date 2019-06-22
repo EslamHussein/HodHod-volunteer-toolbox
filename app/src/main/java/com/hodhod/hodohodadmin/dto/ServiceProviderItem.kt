@@ -8,23 +8,27 @@ data class ServiceProviderItem(val type: String, val number: Int) {
     fun getIcon(): Int {
 
         return when (type) {
-            "food" -> R.drawable.food
-            "health" -> R.drawable.health
-            else -> R.drawable.food
+            "Report Missing" -> R.drawable.food
+            "Call for Medical" -> R.drawable.health
+            "Report water level" -> R.drawable.ic_health
+            "Report congestion" -> R.drawable.health
+            "Go to higher ground" -> R.drawable.health
+            else -> R.drawable.food //Call for food
         }
     }
 
     fun getProviderType(): String {
-        return when (type) {
-            "food" -> "مزودين الغذاء"
-            "health" -> "إسعافات أولية"
-            else -> ""
-        }
+        return type
+//        return when (type) {
+//            "food" -> "مزودين الغذاء"
+//            "health" -> "إسعافات أولية"
+//            else -> ""
+//        }
 
     }
 
 
     fun getProviderNumber(): String {
-        return " عدد$number متطوع "
+        return "$number Volunteer"
     }
 }

@@ -5,16 +5,17 @@
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:layout_margin="8dp"
+    android:background="#262626"
     android:padding="8dp">
 
 
-    <ImageView
-        android:id="@+id/problemImageView"
-        android:layout_width="wrap_content"
+    <TextView
+        android:id="@+id/titleTextView"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:src="@drawable/ico_1"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:text="Total Reports"
+        android:textColor="#cccccc"
+        android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -23,22 +24,13 @@
         android:id="@+id/problemNumberTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         android:gravity="end"
         android:text="12,972"
-        android:textSize="22sp"
-        app:layout_constraintStart_toEndOf="@+id/problemImageView"
-        app:layout_constraintTop_toTopOf="@+id/problemImageView" />
+        android:textColor="#ffffff"
+        android:textSize="30sp"
 
-    <TextView
-        android:id="@+id/titleTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="end"
-        android:text="@string/waste_disposal"
-        android:textSize="16sp"
-        app:layout_constraintStart_toStartOf="@+id/problemNumberTextView"
-        app:layout_constraintTop_toBottomOf="@id/problemNumberTextView" />
+        app:layout_constraintStart_toStartOf="@id/titleTextView"
+        app:layout_constraintTop_toBottomOf="@id/titleTextView" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

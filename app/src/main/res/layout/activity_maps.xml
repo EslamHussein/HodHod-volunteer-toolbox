@@ -5,12 +5,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@android:color/black">
 
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/problemsRecyclerView"
         android:layout_width="0dp"
+        android:background="@android:color/black"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
@@ -20,15 +22,16 @@
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/problemConstranitLayout"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="16dp"
-        android:background="@drawable/layout_bg"
+        android:background="@android:color/black"
         android:elevation="4dp"
         android:translationX="4dp"
-        app:layout_constraintBottom_toBottomOf="@id/mapContainer"
-        app:layout_constraintStart_toStartOf="@id/mapContainer"
-        app:layout_constraintTop_toTopOf="@id/mapContainer"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/problemsRecyclerView"
         app:layout_constraintWidth_percent="0.25">
 
         <TextView
@@ -36,9 +39,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
-            android:text="نوع مقدم الخدمة"
-            android:textColor="#485465"
-            android:textSize="36sp"
+            android:letterSpacing="-0.01"
+            android:text="Volunteering services"
+            android:textColor="#ffffff"
+            android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -49,8 +53,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
-            android:textColor="#858585"
-            android:textSize="24sp"
+            android:letterSpacing="-0.01"
+            android:lineSpacingExtra="4sp"
+            android:text="Total number of volunteers"
+            android:textColor="#999999"
+            android:textSize="12sp"
             app:layout_constraintTop_toBottomOf="@id/serviceProviderTypeTextView" />
 
         <androidx.recyclerview.widget.RecyclerView
@@ -63,26 +70,17 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/mapContainer"
+    <fragment
+        android:id="@+id/mapFramgent"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_margin="32dp"
-        android:elevation="8dp"
-        app:cardCornerRadius="4dp"
+        android:layout_margin="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/problemsRecyclerView">
-
-        <fragment
-            android:id="@+id/mapFramgent"
-            android:name="com.google.android.gms.maps.SupportMapFragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:context=".MainActivity" />
-    </androidx.cardview.widget.CardView>
+        app:layout_constraintStart_toEndOf="@id/problemConstranitLayout"
+        app:layout_constraintTop_toBottomOf="@id/problemsRecyclerView"
+        tools:context=".MainActivity" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

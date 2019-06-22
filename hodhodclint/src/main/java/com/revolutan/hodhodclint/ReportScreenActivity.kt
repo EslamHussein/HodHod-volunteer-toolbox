@@ -11,6 +11,9 @@ import kotlinx.android.synthetic.main.activity_report_screen.*
 
 class ReportScreenActivity : AppCompatActivity(), IssuesAdapter.OnItemClick {
 
+    private val database = FirebaseDatabase.getInstance()
+    private val reporter = generateRandomReporter()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_report_screen)
@@ -18,6 +21,8 @@ class ReportScreenActivity : AppCompatActivity(), IssuesAdapter.OnItemClick {
             adapter = IssuesAdapter(getIssuesTypes(), this@ReportScreenActivity)
             layoutManager = GridLayoutManager(this@ReportScreenActivity, 2)
         }
+        val reporterRef = database.getReference("reporters")
+        reporterRef.child(reporter.name).setValue(reporter)
     }
 
     override fun onClick(item: Issue) {
@@ -26,19 +31,17 @@ class ReportScreenActivity : AppCompatActivity(), IssuesAdapter.OnItemClick {
         builder.setTitle("${item.type} status")
 
         item.apply {
-            reporterName = generateRandomNames()
+            reporterName = reporter.name
             val randomLocation =
                     generateRandomLocation(LatLng(31.2213, 29.9379)
                             , LatLng(31.2555, 29.9832))
             lat = randomLocation.latitude
             lng = randomLocation.longitude
-
         }
 
-        val database = FirebaseDatabase.getInstance()
-        val myRef = database.getReference("reports")
+        val reportsRef = database.getReference("reports")
 
-        myRef.push().setValue(item).addOnFailureListener {
+        reportsRef.push().setValue(item).addOnFailureListener {
             builder.setMessage("Please try again.")
             builder.show()
         }.addOnSuccessListener {

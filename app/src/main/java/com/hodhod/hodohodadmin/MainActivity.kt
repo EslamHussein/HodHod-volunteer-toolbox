@@ -49,7 +49,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, ValueEventListener
 
         problemsRecyclerView.apply {
             adapter = problemsAdapter
-            layoutManager = GridLayoutManager(this@MainActivity, 4)
+            layoutManager = GridLayoutManager(this@MainActivity, 6)
         }
 
         viewManager = LinearLayoutManager(this)
@@ -70,26 +70,17 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, ValueEventListener
         mClusterManager = ClusterManager(this@MainActivity, mMap)
 
         googleMap.setOnCameraIdleListener(mClusterManager)
-
-
         val renderer = CustomClusterRenderer(this, mMap, mClusterManager)
-
         mClusterManager.renderer = renderer
 
-
         mMap.mapType = GoogleMap.MAP_TYPE_HYBRID
-
 
         mMap.moveCamera(CameraUpdateFactory.newLatLng(LatLng(21.3549, 39.9841)));
 
         val zoomLevel = 16.0f //This goes up to 21
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(21.3549, 39.9841), zoomLevel))
 
-
-
         reportersDB.addValueEventListener(this)
-
-
         reportsDB.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {
 
@@ -97,29 +88,16 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, ValueEventListener
             }
 
             override fun onDataChange(data: DataSnapshot) {
-
-
                 data.children.forEach {
 
-
                     val issue = it.getValue(Issue::class.java)
-
                     issuesList.add(issue!!)
-
-
                     val markerOptions = MarkerOptions()
-
-                    // Setting the position for the marker
-                    markerOptions.position(LatLng(issue.lat, issue.lon))
-
+                    markerOptions.position(LatLng(issue.lat, issue.lng))
                     markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.group))
-                    // Clears the previously touched position
-                    // Placing a marker on the touched position
                     issuesMarker[it.key.toString()] = googleMap.addMarker(markerOptions)
                     updateAnalytics()
                 }
-
-
             }
         })
 
@@ -145,7 +123,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, ValueEventListener
                 val markerOptions = MarkerOptions()
 
                 // Setting the position for the marker
-                markerOptions.position(LatLng(issue.lat, issue.lon))
+                markerOptions.position(LatLng(issue.lat, issue.lng))
 
                 issuesMarker[data.key.toString()] = googleMap.addMarker(markerOptions)
 
@@ -195,7 +173,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, ValueEventListener
         }
 
 
-        serviceProviderTotalNumberTextView.text = " اجمالي العدد ${reportersList.size} متطوع"
+        serviceProviderTotalNumberTextView.text = "Total number of volunteers ${reportersList.size} "
 
 
         mClusterManager.clearItems()
@@ -216,8 +194,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, ValueEventListener
         val counter = issuesList.groupBy {
             it.type
         }.mapValues {
-            it.value.size
+            Problem(it.value.size, Problems.fromString(it.key))
+        }.toList().map {
+            it.second
         }
+
 
         problemsAdapter.updateValues(counter)
 
