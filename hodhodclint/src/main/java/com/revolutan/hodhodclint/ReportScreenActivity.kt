@@ -11,7 +11,6 @@ import kotlinx.android.synthetic.main.activity_report_screen.*
 
 class ReportScreenActivity : AppCompatActivity(), IssuesAdapter.OnItemClick {
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_report_screen)
@@ -45,9 +44,6 @@ class ReportScreenActivity : AppCompatActivity(), IssuesAdapter.OnItemClick {
         }.addOnSuccessListener {
             builder.setMessage("Issue has been submitted successfully ")
             builder.show()
-
         }
-
-
     }
 }
