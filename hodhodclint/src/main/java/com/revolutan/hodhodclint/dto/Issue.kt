@@ -2,6 +2,8 @@ package com.revolutan.hodhodclint.dto
 
 import androidx.annotation.DrawableRes
 import com.revolutan.hodhodclint.R
+import java.util.*
+
 
 data class LatLng(val latitude: Double, val longitude: Double)
 
@@ -48,8 +50,7 @@ fun getIssuesTypes(): List<Issue> {
 
 fun generateRandomReporter(): Reporter {
     val randomLocation =
-            generateRandomLocation(LatLng(31.2213, 29.9379)
-                    , LatLng(31.2555, 29.9832))
+            getLocation(31.2213, 29.9379, 20)
     val lat = randomLocation.latitude
     val lng = randomLocation.longitude
     return listOf(Reporter("Eslam", lat, lng, Problems.MedicalAssistance.value),
@@ -69,23 +70,45 @@ fun generateRandomReporter(): Reporter {
             Reporter("Doaa", lat, lng, Problems.WaterIssues.value)
     ).shuffled().first()
 }
+//
+//fun generateRandomLocation(A: LatLng, B: LatLng): LatLng {
+//    val phi1 = Math.toRadians(A.latitude)
+//    val gamma1 = Math.toRadians(A.longitude)
+//
+//    val phi2 = Math.toRadians(B.latitude)
+//    val deltaGamma = Math.toRadians(B.longitude - A.longitude)
+//
+//    val aux1 = Math.cos(phi2) * Math.cos(deltaGamma)
+//    val aux2 = Math.cos(phi2) * Math.sin(deltaGamma)
+//
+//    val x = Math.sqrt((Math.cos(phi1) + aux1) * (Math.cos(phi1) + aux1) + aux2 * aux2)
+//    val y = Math.sin(phi1) + Math.sin(phi2)
+//    val phi3 = Math.atan2(y, x)
+//
+//    val gamma3 = gamma1 + Math.atan2(aux2, Math.cos(phi1) + aux1)
+//
+//    // normalise to −180..+180°
+//    return LatLng(Math.toDegrees(phi3), (Math.toDegrees(gamma3) + 540) % 360 - 180)
+//}
 
-fun generateRandomLocation(A: LatLng, B: LatLng): LatLng {
-    val phi1 = Math.toRadians(A.latitude)
-    val gamma1 = Math.toRadians(A.longitude)
 
-    val phi2 = Math.toRadians(B.latitude)
-    val deltaGamma = Math.toRadians(B.longitude - A.longitude)
+fun getLocation(x0: Double, y0: Double, radius: Int): LatLng {
+    val random = Random()
 
-    val aux1 = Math.cos(phi2) * Math.cos(deltaGamma)
-    val aux2 = Math.cos(phi2) * Math.sin(deltaGamma)
+    // Convert radius from meters to degrees
+    val radiusInDegrees = (radius / 111000f).toDouble()
 
-    val x = Math.sqrt((Math.cos(phi1) + aux1) * (Math.cos(phi1) + aux1) + aux2 * aux2)
-    val y = Math.sin(phi1) + Math.sin(phi2)
-    val phi3 = Math.atan2(y, x)
+    val u = random.nextDouble()
+    val v = random.nextDouble()
+    val w = radiusInDegrees * Math.sqrt(u)
+    val t = 2.0 * Math.PI * v
+    val x = w * Math.cos(t)
+    val y = w * Math.sin(t)
 
-    val gamma3 = gamma1 + Math.atan2(aux2, Math.cos(phi1) + aux1)
+    // Adjust the x-coordinate for the shrinking of the east-west distances
+    val new_x = x / Math.cos(Math.toRadians(y0))
 
-    // normalise to −180..+180°
-    return LatLng(Math.toDegrees(phi3), (Math.toDegrees(gamma3) + 540) % 360 - 180)
+    val foundLongitude = new_x + x0
+    val foundLatitude = y + y0
+    return LatLng(foundLatitude, foundLongitude)
 }

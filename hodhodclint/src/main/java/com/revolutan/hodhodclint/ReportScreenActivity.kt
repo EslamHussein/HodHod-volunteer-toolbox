@@ -6,7 +6,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.firebase.database.FirebaseDatabase
 import com.revolutan.hodhodclint.adapter.IssuesAdapter
-import com.revolutan.hodhodclint.dto.*
+import com.revolutan.hodhodclint.dto.Issue
+import com.revolutan.hodhodclint.dto.generateRandomReporter
+import com.revolutan.hodhodclint.dto.getIssuesTypes
+import com.revolutan.hodhodclint.dto.getLocation
 import kotlinx.android.synthetic.main.activity_report_screen.*
 
 class ReportScreenActivity : AppCompatActivity(), IssuesAdapter.OnItemClick {
@@ -33,8 +36,7 @@ class ReportScreenActivity : AppCompatActivity(), IssuesAdapter.OnItemClick {
         item.apply {
             reporterName = reporter.name
             val randomLocation =
-                    generateRandomLocation(LatLng(31.2213, 29.9379)
-                            , LatLng(31.2555, 29.9832))
+                    getLocation(31.2213, 29.9379, 20)
             lat = randomLocation.latitude
             lng = randomLocation.longitude
         }

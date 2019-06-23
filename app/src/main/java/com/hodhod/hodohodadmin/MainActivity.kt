@@ -3,6 +3,8 @@ package com.hodhod.hodohodadmin
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.os.Bundle
+import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
@@ -18,6 +20,7 @@ import com.hodhod.hodohodadmin.adapter.ProblemsAdapter
 import com.hodhod.hodohodadmin.adapter.ServiceProvidersAdapter
 import com.hodhod.hodohodadmin.dto.*
 import kotlinx.android.synthetic.main.activity_maps.*
+import kotlinx.android.synthetic.main.marker_custom_view.view.*
 
 
 const val TAG = "MainActivity"
@@ -46,10 +49,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, ValueEventListener
         setContentView(R.layout.activity_maps)
         setSupportActionBar(my_toolbar)
         supportActionBar?.setDisplayShowHomeEnabled(true)
-        supportActionBar?.setIcon(R.drawable.logo)
-        my_toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.colorAccent))
-
-
+        supportActionBar?.setIcon(R.drawable.ic_logo)
+        supportActionBar?.title = ""
 
         problemsAdapter = ProblemsAdapter(getProblems())
 
@@ -74,6 +75,27 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, ValueEventListener
         mMap = googleMap
 
 
+        mMap.setInfoWindowAdapter(object : GoogleMap.InfoWindowAdapter {
+            override fun getInfoContents(marker: Marker?): View {
+
+
+                val myContentView = layoutInflater.inflate(
+                        R.layout.marker_custom_view, null)
+                myContentView.problemTitleTextView.text = marker?.title
+                return myContentView
+
+            }
+
+            override fun getInfoWindow(p0: Marker?): View? {
+
+                return null
+            }
+
+        })
+        mMap.setOnInfoWindowClickListener {
+            Toast.makeText(this@MainActivity, "Assigned", Toast.LENGTH_LONG).show()
+        }
+
 
         mMap.mapType = GoogleMap.MAP_TYPE_HYBRID
         val location = LatLng(31.2213, 29.9379)
@@ -91,16 +113,16 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, ValueEventListener
             }
 
             override fun onDataChange(data: DataSnapshot) {
-                data.children.forEach {
-
-                    val issue = it.getValue(Issue::class.java)
-                    issuesList.add(issue!!)
-                    val markerOptions = MarkerOptions()
-                    markerOptions.position(LatLng(issue.lat, issue.lng))
-//                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.group))
-                    issuesMarker[it.key.toString()] = googleMap.addMarker(markerOptions)
-                    updateAnalytics()
-                }
+//                data.children.forEach {
+//
+//                    val issue = it.getValue(Issue::class.java)
+//                    issuesList.add(issue!!)
+//                    val markerOptions = MarkerOptions()
+//                    markerOptions.position(LatLng(issue.lat, issue.lng))
+////                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.group))
+//                    issuesMarker[it.key.toString()] = googleMap.addMarker(markerOptions)
+//                    updateAnalytics()
+//                }
             }
         })
 
@@ -127,7 +149,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, ValueEventListener
 
                 // Setting the position for the marker
                 markerOptions.position(LatLng(issue.lat, issue.lng))
-
+                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.group))
+                markerOptions.title(issue.type)
                 issuesMarker[data.key.toString()] = googleMap.addMarker(markerOptions)
 
                 updateAnalytics()
@@ -162,12 +185,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, ValueEventListener
 
             markerOptions.position(LatLng(reporter.lat, reporter.lng))
 
-            markerOptions.icon(bitmapDescriptorFromVector(R.drawable.ic_health))
+            markerOptions.icon(bitmapDescriptorFromVector(Problems.fromString(reporter.speciality).icon))
             reportersMarker[reporter.name] = mMap.addMarker(markerOptions)
             reporterList.add(reporter)
 
         }
-
 
         updateReporters(reporterList)
     }
