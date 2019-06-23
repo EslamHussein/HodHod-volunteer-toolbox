@@ -61,9 +61,10 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, ValueEventListener
         supportActionBar?.setIcon(R.drawable.ic_logo)
         supportActionBar?.title = ""
 
+
         progress = ProgressDialog(this).apply {
             title = "Assigning..."
-            setMessage("Loadding...")
+            setMessage("Loading...")
             setCancelable(false)
             setCanceledOnTouchOutside(false)
         }

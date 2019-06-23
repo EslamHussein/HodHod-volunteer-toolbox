@@ -41,8 +41,10 @@ dependencies {
     implementation 'com.google.firebase:firebase-database:18.0.0'
     implementation 'com.android.support:design:28.0.0'
 
-
-
+//    implementation 'com.squareup.okhttp3:okhttp-ws:3.4.2'
+    implementation 'com.ibm.watson.developer_cloud:android-sdk:0.5.0'
+    implementation 'com.ibm.watson.developer_cloud:speech-to-text:6.11.0'
+    implementation 'com.karumi:dexter:5.0.0'
 
 
 }
