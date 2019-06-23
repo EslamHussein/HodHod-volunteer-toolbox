@@ -66,7 +66,7 @@ class ReportScreenActivity : AppCompatActivity(), IssuesAdapter.OnItemClick, Per
     }
 
     override fun onClick(item: Issue) {
-
+        sendIssue(item)
 
     }
 
