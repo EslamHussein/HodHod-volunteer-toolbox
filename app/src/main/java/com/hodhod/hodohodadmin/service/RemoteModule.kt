@@ -26,7 +26,7 @@ val remoteModule = module {
             .build()
     }
 
-    factory { get<Retrofit>().create(EventService::class.java) }
+    factory { get<Retrofit>().create(AssignVolunteerService::class.java) }
 
 
 }

@@ -1,10 +1,11 @@
 package com.hodhod.hodohodadmin
 
+import android.app.ProgressDialog
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
@@ -19,14 +20,20 @@ import com.google.firebase.database.*
 import com.hodhod.hodohodadmin.adapter.ProblemsAdapter
 import com.hodhod.hodohodadmin.adapter.ServiceProvidersAdapter
 import com.hodhod.hodohodadmin.dto.*
+import com.hodhod.hodohodadmin.service.AssignVolunteerBody
+import com.hodhod.hodohodadmin.service.AssignVolunteerService
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_maps.*
 import kotlinx.android.synthetic.main.marker_custom_view.view.*
+import org.koin.android.ext.android.inject
 
 
 const val TAG = "MainActivity"
 
 class MainActivity : AppCompatActivity(), OnMapReadyCallback, ValueEventListener {
     private lateinit var mMap: GoogleMap
+    private val assignService: AssignVolunteerService by inject()
 
     private lateinit var viewManager: RecyclerView.LayoutManager
     private lateinit var problemsAdapter: ProblemsAdapter
@@ -43,6 +50,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, ValueEventListener
 
     private var issuesList = mutableListOf<Issue>()
 
+    private lateinit var progress: ProgressDialog
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,6 +60,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, ValueEventListener
         supportActionBar?.setDisplayShowHomeEnabled(true)
         supportActionBar?.setIcon(R.drawable.ic_logo)
         supportActionBar?.title = ""
+
+        progress = ProgressDialog(this).apply {
+            title = "Assigning..."
+            setMessage("Loadding...")
+            setCancelable(false)
+            setCanceledOnTouchOutside(false)
+        }
 
         problemsAdapter = ProblemsAdapter(getProblems())
 
@@ -76,13 +92,17 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, ValueEventListener
 
 
         mMap.setInfoWindowAdapter(object : GoogleMap.InfoWindowAdapter {
-            override fun getInfoContents(marker: Marker?): View {
+            override fun getInfoContents(marker: Marker?): View? {
 
+                return if (marker?.title?.isEmpty() == true) {
+                    null
+                } else {
+                    val myContentView = layoutInflater.inflate(
+                            R.layout.marker_custom_view, null)
+                    myContentView.problemTitleTextView.text = marker?.title
+                    myContentView
+                }
 
-                val myContentView = layoutInflater.inflate(
-                        R.layout.marker_custom_view, null)
-                myContentView.problemTitleTextView.text = marker?.title
-                return myContentView
 
             }
 
@@ -93,7 +113,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, ValueEventListener
 
         })
         mMap.setOnInfoWindowClickListener {
-            Toast.makeText(this@MainActivity, "Assigned", Toast.LENGTH_LONG).show()
+            assignVolunteer(Problems.fromString(it?.title!!))
         }
 
 
@@ -113,16 +133,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, ValueEventListener
             }
 
             override fun onDataChange(data: DataSnapshot) {
-//                data.children.forEach {
-//
-//                    val issue = it.getValue(Issue::class.java)
-//                    issuesList.add(issue!!)
-//                    val markerOptions = MarkerOptions()
-//                    markerOptions.position(LatLng(issue.lat, issue.lng))
-////                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.group))
-//                    issuesMarker[it.key.toString()] = googleMap.addMarker(markerOptions)
-//                    updateAnalytics()
-//                }
+
             }
         })
 
@@ -235,6 +246,35 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, ValueEventListener
             Problem(it.second.first, Problems.fromString(it.second.second), parentage.toInt())
         }
         problemsAdapter.updateValues(counter)
+
+    }
+
+
+    fun assignVolunteer(problems: Problems) {
+
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Assigning status")
+
+
+        assignService.assignVolunteer(AssignVolunteerBody(intArrayOf(problems.index))).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread()).doOnSubscribe {
+                    progress.show()
+                }.doFinally {
+
+                    progress.hide()
+                }.subscribe({ result ->
+
+                    builder.setMessage("The issue assigned to ${result.volunteer}")
+                    builder.show()
+
+
+                }, { error ->
+
+                    builder.setMessage("Please try again.")
+                    builder.show()
+
+
+                })
 
     }
 }

@@ -70,26 +70,7 @@ fun generateRandomReporter(): Reporter {
             Reporter("Doaa", lat, lng, Problems.WaterIssues.value)
     ).shuffled().first()
 }
-//
-//fun generateRandomLocation(A: LatLng, B: LatLng): LatLng {
-//    val phi1 = Math.toRadians(A.latitude)
-//    val gamma1 = Math.toRadians(A.longitude)
-//
-//    val phi2 = Math.toRadians(B.latitude)
-//    val deltaGamma = Math.toRadians(B.longitude - A.longitude)
-//
-//    val aux1 = Math.cos(phi2) * Math.cos(deltaGamma)
-//    val aux2 = Math.cos(phi2) * Math.sin(deltaGamma)
-//
-//    val x = Math.sqrt((Math.cos(phi1) + aux1) * (Math.cos(phi1) + aux1) + aux2 * aux2)
-//    val y = Math.sin(phi1) + Math.sin(phi2)
-//    val phi3 = Math.atan2(y, x)
-//
-//    val gamma3 = gamma1 + Math.atan2(aux2, Math.cos(phi1) + aux1)
-//
-//    // normalise to −180..+180°
-//    return LatLng(Math.toDegrees(phi3), (Math.toDegrees(gamma3) + 540) % 360 - 180)
-//}
+
 
 
 fun getLocation(x0: Double, y0: Double, radius: Int): LatLng {

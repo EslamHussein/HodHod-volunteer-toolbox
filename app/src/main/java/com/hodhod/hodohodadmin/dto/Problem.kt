@@ -4,13 +4,13 @@ import androidx.annotation.DrawableRes
 import com.hodhod.hodohodadmin.R
 
 
-enum class Problems(val value: String, @DrawableRes val icon: Int) {
-    MedicalAssistance("Medical assistance", R.drawable.ic_health),
-    FoodDistributors("Food distributors", R.drawable.ic_food),
-    WaterIssues("Water Issues", R.drawable.ic_water),
-    SurvivorsHandling("Survivors handling", R.drawable.ic_people),
-    RoadAndBridgeFixes("Road and Bridge fixes", R.drawable.ic_road),
-    CleanupOperations("Cleanup operations", R.drawable.ic_recycle);
+enum class Problems(val value: String, @DrawableRes val icon: Int, val index: Int) {
+    MedicalAssistance("Medical assistance", R.drawable.ic_health, 0),
+    FoodDistributors("Food distributors", R.drawable.ic_food, 1),
+    WaterIssues("Water Issues", R.drawable.ic_water, 2),
+    SurvivorsHandling("Survivors handling", R.drawable.ic_people, 3),
+    RoadAndBridgeFixes("Road and Bridge fixes", R.drawable.ic_road, 4),
+    CleanupOperations("Cleanup operations", R.drawable.ic_recycle, 5);
 
     companion object {
         fun fromString(str: String): Problems {
