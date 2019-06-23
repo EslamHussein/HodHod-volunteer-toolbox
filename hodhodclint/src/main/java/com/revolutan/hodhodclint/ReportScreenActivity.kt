@@ -51,6 +51,9 @@ class ReportScreenActivity : AppCompatActivity(), IssuesAdapter.OnItemClick, Per
                     .check();
 
         }
+
+        setSupportActionBar(myToolBar)
+
         microphoneHelper = MicrophoneHelper(this);
 
 
@@ -291,4 +294,5 @@ class ReportScreenActivity : AppCompatActivity(), IssuesAdapter.OnItemClick, Per
         }
         return costs[s2.length]
     }
+
 }
